@@ -1,0 +1,29 @@
+version: "3"
+
+dotenv:
+  - .env
+
+tasks:
+  database:
+    desc: Create a postgres docker container and run it
+    cmds:
+      - defer: |
+          docker stop htmxtodo_postgres
+          docker rm htmxtodo_postgres
+      - >
+        docker run
+        -p $DB_PORT:5432
+        -v htmxtodo_postgres_data:/var/lib/postgresql/data
+        -e POSTGRES_USER=$DB_USER
+        -e POSTGRES_PASSWORD=$DB_PASS
+        -e POSTGRES_DB=$DB_NAME
+        --name htmxtodo_postgres
+        postgres:15.3-alpine3.18
+
+  migrate:
+    desc: Migrate files inside /migrations folder
+    cmd: goose -dir migrations postgres "user=$DB_USER password=$DB_PASS host=$DB_HOST port=DB_PORT sslmode=disable" up
+
+  dev:
+    desc: Start server with hot-reload
+    cmd: gow run .
