@@ -1,8 +1,9 @@
 package storages
 
 import (
-	"github.com/jmoiron/sqlx"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Todo struct {
@@ -12,6 +13,7 @@ type Todo struct {
 
 	Title string `db:"title"`
 	Body  string `db:"body"`
+	Done  bool   `db:"done"`
 }
 
 type TodosStorage struct {
@@ -27,18 +29,10 @@ func (s TodosStorage) Create(todo *Todo) error {
 	INSERT INTO "todos"
 	("title", "body")
 	VALUES ($1, $2)
-	RETURNING "id", "created_at", "updated_at";
+	RETURNING *;
 	`
 
-	if err := s.db.QueryRow(
-		query,
-		todo.Title,
-		todo.Body,
-	).Scan(&todo.ID, &todo.CreatedAt, &todo.UpdatedAt); err != nil {
-		return err
-	}
-
-	return nil
+	return s.db.Get(todo, query, todo.Title, todo.Body)
 }
 
 func (s TodosStorage) Read(todo *Todo) error {
@@ -48,25 +42,16 @@ func (s TodosStorage) Read(todo *Todo) error {
 	WHERE id = ?;
 	`
 
-	if err := s.db.Get(todo, query, todo.ID); err != nil {
-		return err
-	}
-
-	return nil
+	return s.db.Get(todo, query, todo.ID)
 }
 
-func (s TodosStorage) ReadAll() ([]Todo, error) {
+func (s TodosStorage) ReadAll(todos *[]Todo) error {
 	query := `
 	SELECT *
 	FROM "todos";
 	`
 
-	todos := []Todo{}
-	if err := s.db.Select(&todos, query); err != nil {
-		return nil, err
-	}
-
-	return todos, nil
+	return s.db.Select(todos, query)
 }
 
 func (s TodosStorage) Update(todo *Todo) error {
@@ -74,19 +59,21 @@ func (s TodosStorage) Update(todo *Todo) error {
 	UPDATE "todos"
 	SET "title" = $1, "body" = $2
 	WHERE "id" = $3
-	RETURNING "updated_at";
+	RETURNING *;
 	`
 
-	if err := s.db.QueryRow(
-		query,
-		todo.Title,
-		todo.Body,
-		todo.ID,
-	).Scan(&todo.UpdatedAt); err != nil {
-		return err
-	}
+	return s.db.Get(todo, query, todo.Title, todo.Body, todo.ID)
+}
 
-	return nil
+func (s TodosStorage) ToggleDone(todo *Todo) error {
+	query := `
+	UPDATE "todos"
+	SET "done" = NOT "done"
+	WHERE "id" = $1
+	RETURNING *;
+	`
+
+	return s.db.Get(todo, query, todo.ID)
 }
 
 func (s TodosStorage) Delete(todo *Todo) error {
@@ -97,9 +84,5 @@ func (s TodosStorage) Delete(todo *Todo) error {
 	RETURNING *;
 	`
 
-	if err := s.db.Get(todo, query, todo.ID); err != nil {
-		return err
-	}
-
-	return nil
+	return s.db.Get(todo, query, todo.ID)
 }

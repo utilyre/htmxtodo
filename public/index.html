@@ -20,7 +20,13 @@
   >
     <h1 class="font-bold text-2xl">HTMX Todo</h1>
 
-    <div id="todos" class="flex flex-col mt-2 divide-y-2 gap-2"></div>
+    <div
+      id="todos"
+      hx-get="/todos"
+      hx-trigger="load"
+      hx-swap="innerHTML"
+      class="flex flex-col mt-2 divide-y-2 gap-2"
+    ></div>
 
     <form
       hx-post="/todos"

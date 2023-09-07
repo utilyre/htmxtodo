@@ -1,0 +1,15 @@
+{{define "todos"}}
+{{range .}}
+{{template "todo" .}}
+{{end}}
+{{end}}
+
+{{define "todo"}}
+<div class="{{if .Done}}line-through{{end}}">
+  <h2 class="font-semibold text-l">{{.Title}}</h2>
+
+  {{if .Body}}
+  <p class="text-sm">{{.Body}}</p>
+  {{end}}
+</div>
+{{end}}
