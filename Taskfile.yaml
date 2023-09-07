@@ -4,6 +4,10 @@ dotenv:
   - .env
 
 tasks:
+  default:
+    desc: Start server with hot-reload
+    cmd: gow run .
+
   db:
     desc: Create a postgres docker container and run it
     cmds:
@@ -23,7 +27,3 @@ tasks:
   migrate:
     desc: Migrate files inside /migrations folder
     cmd: goose -dir migrations postgres "user=$DB_USER password=$DB_PASS host=$DB_HOST port=$DB_PORT dbname=$DB_NAME sslmode=disable" {{.CLI_ARGS}}
-
-  dev:
-    desc: Start server with hot-reload
-    cmd: gow run .
