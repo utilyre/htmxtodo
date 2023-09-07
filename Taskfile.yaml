@@ -27,3 +27,16 @@ tasks:
   migrate:
     desc: Migrate files inside /migrations folder
     cmd: goose -dir migrations postgres "user=$DB_USER password=$DB_PASS host=$DB_HOST port=$DB_PORT dbname=$DB_NAME sslmode=disable" {{.CLI_ARGS}}
+
+  deploy:
+    desc: Deploy project onto a docker container
+    cmd: >
+      docker run -d
+      -p $BE_PORT:80
+      -e DB_USER=$DB_USER
+      -e DB_PASS=$DB_PASS
+      -e DB_HOST=$DB_HOST
+      -e DB_PORT=$DB_PORT
+      -e DB_NAME=$DB_NAME
+      --name htmxtodo
+      {{.CLI_ARGS}}
