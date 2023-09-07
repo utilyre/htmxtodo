@@ -32,7 +32,7 @@ func New(lc fx.Lifecycle, cfg configs.Server) *echo.Echo {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
-				e.Logger.Fatal(e.Start(cfg.Host + ":" + cfg.Port))
+				e.Logger.Fatal(e.Start(":" + cfg.Port))
 			}()
 
 			return nil

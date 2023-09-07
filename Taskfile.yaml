@@ -12,16 +12,16 @@ tasks:
     desc: Create a postgres docker container and run it
     cmds:
       - defer: |
-          docker stop htmxtodo_postgres
-          docker rm htmxtodo_postgres
+          docker stop htmxtodo_database
+          docker rm htmxtodo_database
       - >
         docker run
-        -p $DB_PORT:5432
-        -v htmxtodo_postgres_data:/var/lib/postgresql/data
+        -v htmxtodo_data:/var/lib/postgresql/data
         -e POSTGRES_USER=$DB_USER
         -e POSTGRES_PASSWORD=$DB_PASS
         -e POSTGRES_DB=$DB_NAME
-        --name htmxtodo_postgres
+        --network host
+        --name htmxtodo_database
         postgres:15.3-alpine3.18
 
   migrate:
@@ -30,13 +30,17 @@ tasks:
 
   deploy:
     desc: Deploy project onto a docker container
-    cmd: >
-      docker run -d
-      -p $BE_PORT:80
-      -e DB_USER=$DB_USER
-      -e DB_PASS=$DB_PASS
-      -e DB_HOST=$DB_HOST
-      -e DB_PORT=$DB_PORT
-      -e DB_NAME=$DB_NAME
-      --name htmxtodo
-      {{.CLI_ARGS}}
+    cmds:
+      - defer: |
+          docker stop htmxtodo_server
+          docker rm htmxtodo_server
+      - >
+        docker run
+        -e DB_USER=$DB_USER
+        -e DB_PASS=$DB_PASS
+        -e DB_HOST=$DB_HOST
+        -e DB_PORT=$DB_PORT
+        -e DB_NAME=$DB_NAME
+        --network host
+        --name htmxtodo_server
+        {{.CLI_ARGS}}
