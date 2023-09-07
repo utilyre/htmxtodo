@@ -4,15 +4,15 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/utilyre/htmxtodo/config"
+	"github.com/utilyre/htmxtodo/layers/configs"
 )
 
-func New(c config.Config) *slog.Logger {
+func New(mode configs.Mode) *slog.Logger {
 	var h slog.Handler
-	switch c.Mode {
-	case config.ModeDev:
+	switch mode {
+	case configs.ModeDev:
 		h = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
-	case config.ModeProd:
+	case configs.ModeProd:
 		h = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
 	}
 
