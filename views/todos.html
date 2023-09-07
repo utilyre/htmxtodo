@@ -1,3 +1,4 @@
+<!-- prettier-ignore -->
 {{define "todos"}}
 {{range .}}
 {{template "todo" .}}
@@ -5,11 +6,38 @@
 {{end}}
 
 {{define "todo"}}
-<div class="{{if .Done}}line-through{{end}}">
-  <h2 class="font-semibold text-l">{{.Title}}</h2>
+<div class="flex flex-col">
+  <h2 class="font-semibold text-l {{if .Done}}line-through{{end}}">
+    {{.Title}}
+  </h2>
 
   {{if .Body}}
-  <p class="text-sm">{{.Body}}</p>
+  <p class="text-sm {{if .Done}}line-through{{end}}">{{.Body}}</p>
   {{end}}
+
+  <!-- prettier-ignore -->
+  <input
+    type="checkbox"
+    {{if .Done}}checked{{end}}
+    hx-put="/todos/{{.ID}}/toggle"
+    hx-target="closest div"
+    hx-swap="outerHTML"
+  />
+
+  <button
+    hx-get="/todos/form/{{.ID}}"
+    hx-target="closest div"
+    hx-swap="outerHTML"
+  >
+    Edit
+  </button>
+
+  <button
+    hx-delete="/todos/{{.ID}}"
+    hx-target="closest div"
+    hx-swap="outerHTML"
+  >
+    Delete
+  </button>
 </div>
 {{end}}

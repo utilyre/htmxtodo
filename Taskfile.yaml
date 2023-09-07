@@ -6,7 +6,7 @@ dotenv:
 tasks:
   default:
     desc: Start server with hot-reload
-    cmd: gow run .
+    cmd: gow -s -e go,mod,html run .
 
   db:
     desc: Create a postgres docker container and run it

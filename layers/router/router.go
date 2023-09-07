@@ -25,6 +25,7 @@ func (v *Validator) Validate(s any) error {
 func New(lc fx.Lifecycle, cfg configs.Server) *echo.Echo {
 	e := echo.New()
 
+	e.Debug=true
 	e.HideBanner = true
 	e.HidePort = true
 	e.Validator = &Validator{validate: validator.New()}

@@ -39,7 +39,7 @@ func (s TodosStorage) Read(todo *Todo) error {
 	query := `
 	SELECT *
 	FROM "todos"
-	WHERE id = ?;
+	WHERE id = $1;
 	`
 
 	return s.db.Get(todo, query, todo.ID)
@@ -48,7 +48,8 @@ func (s TodosStorage) Read(todo *Todo) error {
 func (s TodosStorage) ReadAll(todos *[]Todo) error {
 	query := `
 	SELECT *
-	FROM "todos";
+	FROM "todos"
+	ORDER BY "id";
 	`
 
 	return s.db.Select(todos, query)

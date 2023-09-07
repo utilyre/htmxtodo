@@ -1,0 +1,26 @@
+{{define "todo-form"}}
+<form hx-put="/todos/{{.ID}}" hx-swap="innerHTML" class="flex flex-col gap-4">
+  <input
+    required
+    name="title"
+    value="{{.Title}}"
+    placeholder="Title"
+    class="bg-slate-800 p-1"
+  />
+
+  <textarea
+    name="body"
+    placeholder="Body"
+    class="bg-slate-800 min-h-[5rem] p-1"
+  >
+{{.Body}}</textarea
+  >
+
+  <button
+    type="submit"
+    class="bg-slate-800 rounded h-8 hover:bg-slate-700 active:bg-slate-900 transition-colors"
+  >
+    Submit
+  </button>
+</form>
+{{end}}
