@@ -8,16 +8,16 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/utilyre/htmxtodo/layers/configs"
+	"github.com/utilyre/htmxtodo/layers/config"
 	"go.uber.org/fx"
 )
 
-func New(lc fx.Lifecycle, cfg configs.Database, logger *slog.Logger) *sqlx.DB {
+func New(lc fx.Lifecycle, cfg config.Config, logger *slog.Logger) *sqlx.DB {
 	db, err := sqlx.Open(
 		"postgres",
 		fmt.Sprintf(
 			"user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
-			cfg.User, cfg.Pass, cfg.Host, cfg.Port, cfg.Name,
+			cfg.DBUser, cfg.DBPass, cfg.DBHost, cfg.DBPort, cfg.DBName,
 		),
 	)
 	if err != nil {

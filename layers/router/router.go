@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	"github.com/utilyre/htmxtodo/layers/configs"
+	"github.com/utilyre/htmxtodo/layers/config"
 	"go.uber.org/fx"
 )
 
@@ -22,7 +22,7 @@ func (v *Validator) Validate(s any) error {
 	return nil
 }
 
-func New(lc fx.Lifecycle, cfg configs.Server) *echo.Echo {
+func New(lc fx.Lifecycle, cfg config.Config) *echo.Echo {
 	e := echo.New()
 
 	e.HideBanner = true
@@ -32,7 +32,7 @@ func New(lc fx.Lifecycle, cfg configs.Server) *echo.Echo {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
-				e.Logger.Fatal(e.Start(":" + cfg.Port))
+				e.Logger.Fatal(e.Start(":" + cfg.BEPort))
 			}()
 
 			return nil
