@@ -4,7 +4,7 @@ dotenv:
   - .env
 
 tasks:
-  database:
+  db:
     desc: Create a postgres docker container and run it
     cmds:
       - defer: |
@@ -20,9 +20,17 @@ tasks:
         --name htmxtodo_postgres
         postgres:15.3-alpine3.18
 
-  migrate:
+  migr-create:
     desc: Migrate files inside /migrations folder
-    cmd: goose -dir migrations postgres "user=$DB_USER password=$DB_PASS host=$DB_HOST port=DB_PORT sslmode=disable" up
+    cmd: goose -dir migrations create {{.CLI_ARGS}} sql
+
+  migr-up:
+    desc: Migrate files inside /migrations folder
+    cmd: goose -dir migrations postgres "user=$DB_USER password=$DB_PASS host=$DB_HOST port=$DB_PORT dbname=$DB_NAME sslmode=disable" up
+
+  migr-status:
+    desc: Show migration status
+    cmd: goose -dir migrations postgres "user=$DB_USER password=$DB_PASS host=$DB_HOST port=$DB_PORT dbname=$DB_NAME sslmode=disable" status
 
   dev:
     desc: Start server with hot-reload

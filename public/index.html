@@ -3,11 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gym</title>
+    <title>HTMX Todo</title>
 
-    <script defer src="https://unpkg.com/htmx.org@1.9.5"></script>
-    <script defer src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      html {
+        color-scheme: light dark;
+      }
+    </style>
   </head>
 
-  <body></body>
+  <body
+    class="bg-slate-950 w-screen min-h-screen flex flex-col items-center p-2"
+  >
+    <h1 class="font-bold text-2xl">HTMX Todo</h1>
+
+    <div id="todos" class="flex flex-col mt-2 divide-y-2 gap-2"></div>
+
+    <form
+      hx-post="/todos"
+      hx-target="#todos"
+      hx-swap="beforeend"
+      hx-on::after-request="this.reset()"
+      class="flex flex-col gap-4 mt-6"
+    >
+      <input
+        required
+        name="title"
+        placeholder="Title"
+        class="bg-slate-800 p-1"
+      />
+
+      <textarea
+        name="body"
+        placeholder="Body"
+        class="bg-slate-800 min-h-[5rem] p-1"
+      ></textarea>
+
+      <button
+        type="submit"
+        class="bg-slate-800 rounded h-8 hover:bg-slate-700 active:bg-slate-900 transition-colors"
+      >
+        Add
+      </button>
+    </form>
+  </body>
 </html>
